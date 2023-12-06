@@ -1,26 +1,21 @@
 import sys
 import time
-import warnings
 
 import igraph as ig
 import numpy as np
 
 # from constants import timeout, solver_instance
-from gurobi import SolverGurobi; solver_instance = SolverGurobi
+from gurobi import SolverGurobi
 
-from pctsp import Intermediate
+from pctsp import Pctsp
 
 
 from graph_utils import find_recipients
 from transport import Output
 
+solver_instance = SolverGurobi
+
 infinity = int(sys.maxsize/2)
-warnings.simplefilter('always', Warning)
-formulations_dict = {"default": Intermediate, "pctsp": Intermediate}
-
-
-def get_formulation(objective_fn):
-    return formulations_dict.get(objective_fn, formulations_dict["default"])
 
 def get_str(length):
     return "Unbounded" if length >= infinity else str(length)
@@ -41,34 +36,25 @@ def chain_cycle_match(input_data, objective_fn, decrease=True, new_nodes=0, y=0)
         if cycle_length == 0:
             time.sleep(0.5)
             message = "Invalid cycle length, aborting"
-            warnings.warn(message, Warning, stacklevel=sys.maxsize)
             time.sleep(0.5)
             return None
         print()
         print("Initializing and solving formulation")
         t0 = time.perf_counter()
         input_data.start_time = t0
-        formulation = get_formulation(objective_fn)
-        problem = formulation(input_data)
+        problem = Pctsp(input_data)
         result = problem.solve()
         if result is None:
             if not decrease:
                 return None
 
             input_data.cycle_length -= 1
-            print()
-            time.sleep(0.5)
-            warnings.warn("Timed out, decreasing maximum cycle length to " + str(input_data.cycle_length), Warning, stacklevel=sys.maxsize)
-            time.sleep(0.5)
-            print()
         else:
             tf = time.perf_counter()
             # if new_nodes > 0:
             #     postprocess_result(result[0], input_data.graph, new_nodes, y)
-            print()
             print("Solution found")
             print("Solution time:", round(tf-t0, 3), "seconds")
-            print()
             print("Objective value: %s" % round(result[0].value, 5))
             result[0].time = round(tf-t0, 7)
             break

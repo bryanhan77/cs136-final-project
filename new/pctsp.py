@@ -1,14 +1,13 @@
 import math
-
+import time 
 import igraph as ig
 
-eps = 1e-6
 # from formulation_abstract import Formulation
 from graph_utils import simple_cycles_limited_length, simple_cycles_parallel
 from transport import Input, Output
 
 
-import time 
+eps = 1e-6
 timeout = 60
 def get_remaining_time(start_time):
     elapsed_time = time.perf_counter() - start_time
@@ -17,7 +16,7 @@ def setdiff(a, b):
     return list(set(a).difference(b))
 
 
-class Intermediate:
+class Pctsp:
     def __init__(self, input_data: Input):
         self.start_time = input_data.start_time
         self.timed_out = False
@@ -29,8 +28,6 @@ class Intermediate:
 
         self.ndds = input_data.ndds
         self.weights = input_data.weights
-
-        self.forbidden_nodes = input_data.forbidden_nodes
 
         n = graph.vcount()
         self.n = n
@@ -76,10 +73,7 @@ class Intermediate:
         # print("Adding patient constraints")
         for k in self.patients:
             expr = self.in_flow[k] + -1 * self.out_flow[k]
-            if k in self.forbidden_nodes:
-                self.m.add_constr_eq(expr, 0)
-            else:
-                self.m.add_constr_ge(expr, 0)
+            self.m.add_constr_ge(expr, 0)
             cycles_k = self.cycles_part_of[k]
             var_list = [self.z[c] for c in cycles_k]
             var_list.append(self.in_flow[k])

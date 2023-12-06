@@ -1,3 +1,8 @@
+problemData
+maxChainLength,3
+maxCycleLength,3
+cycleBonus,0
+endProblemData
 rootNodes,0
 endRootNodes
 pairedNodes,3

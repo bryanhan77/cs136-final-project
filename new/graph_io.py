@@ -8,36 +8,24 @@ import numpy as np
 
 from match import infinity
 
-
-def no_print(*args):
-    return
-
-
-def generate_graph(filespec, verbose=True):
-    if not verbose:
-        global print
-        old_print = print
-        print = no_print
-    print()
+def generate_graph(filespec):
     print("Creating graph from file")
-    root_nodes, paired_nodes, terminal_nodes, edges, problem_data, forbidden_nodes = parse_input(filespec)
+    root_nodes, paired_nodes, terminal_nodes, edges = parse_input(filespec)
     ndds = list(range(len(root_nodes)))
 
     node_names = root_nodes + paired_nodes + terminal_nodes
-    number_nodes = len(root_nodes) + len(paired_nodes) + len(terminal_nodes)
+    num_nodes = len(root_nodes) + len(paired_nodes) + len(terminal_nodes)
 
     id_map = {
         'r': 0,
         'p': len(root_nodes),
         't': len(root_nodes) + len(paired_nodes),
     }
-    forbidden_nodes = [find_index(node, id_map) for node in forbidden_nodes]
-    problem_data["forbiddenNodes"] = forbidden_nodes
 
     graph = ig.Graph(directed=True)
-    graph.add_vertices(number_nodes)
+    graph.add_vertices(num_nodes)
 
-    weights = np.zeros((number_nodes, number_nodes), dtype=float)
+    weights = np.zeros((num_nodes, num_nodes), dtype=float)
     ids_tuples = [None]*len(edges)
     for i, e in enumerate(edges):
         edge_id, origin, dest, edge_weight = e
@@ -48,28 +36,18 @@ def generate_graph(filespec, verbose=True):
     graph.add_edges(ids_tuples)
 
     print()
-    if not verbose:
-        print = old_print
-    return graph, weights, ndds, problem_data, node_names
+    return graph, weights, ndds, node_names
 
 
 def parse_input(file_spec):
     with open(file_spec) as f:
         lines = f.readlines()
         lines = list(map(str.strip, lines))
-    problem_data_dict, i = read_problem_data_dict(lines)
-    root_nodes, i = read_nodes(lines, i, "rootNodes")
+    root_nodes, i = read_nodes(lines, 0, "rootNodes")
     paired_nodes, i = read_nodes(lines, i, "pairedNodes")
     terminal_nodes, i = read_nodes(lines, i, "terminalNodes")
-    try:
-        forbidden_nodes, i = read_nodes(lines, i, "forbiddenNodes")
-    except AssertionError as _:
-        forbidden_nodes = []
     edges, i = read_edges(lines, i)
-    problem_data_dict["rootNodes"] = len(root_nodes)
-    problem_data_dict["pairedNodes"] = len(paired_nodes)
-    problem_data_dict["terminalNodes"] = len(terminal_nodes)
-    return root_nodes, paired_nodes, terminal_nodes, edges, problem_data_dict, forbidden_nodes
+    return root_nodes, paired_nodes, terminal_nodes, edges
 
 
 def read_nodes(nodes_list, line, str_format):
