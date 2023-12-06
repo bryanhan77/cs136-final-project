@@ -3,7 +3,8 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/gurobi1100/linux64/include"
             ],
             "defines": [],
             "cStandard": "c17",
