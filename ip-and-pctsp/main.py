@@ -5,8 +5,8 @@ from match import chain_cycle_match, get_match_list
 
 from transport import Input
 
-MAX_CHAIN_LENGTH = 3
-MAX_CYCLE_LENGTH = 3
+MAX_CHAIN_LENGTH = 100
+MAX_CYCLE_LENGTH = 100
 
 if __name__ == '__main__':
     input, output, algo = sys.argv[1:4]
