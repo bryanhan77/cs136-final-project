@@ -1,6 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "./**",
-        "./gurobi1100/linux64/lib/python3.11"
-    ]
-}
