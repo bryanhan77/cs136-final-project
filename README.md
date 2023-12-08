@@ -27,14 +27,14 @@ python main.py <input path> <output path> pctsp
 ```
 Example:
 ```
-python main.py ./input/in1.txt out1.txt naive
+python main.py ./input/in1.txt ./input/out1.txt pctsp
 ```
 
 ## Branch-and-Cut ([/wcm-branch-and-cut](https://github.com/phillippesamer/wcm-branch-and-cut/tree/main))
 
 For the Weighted Connected Matching with Branch and Cut, we used [this software](https://github.com/phillippesamer/wcm-branch-and-cut/tree/main) using the open-source [LEMON Graph Library](https://lemon.cs.elte.hu/trac/lemon) and the [Giroubi Optimizer](https://www.gurobi.com/downloads/gurobi-software).
 
-### Setup and Running the Program (from [this Github repo](https://github.com/phillippesamer/wcm-branch-and-cut/tree/main))
+### Setup and Running the Program (taken from [this Github repo](https://github.com/phillippesamer/wcm-branch-and-cut/tree/main))
 
 ### To get LEMON
 
